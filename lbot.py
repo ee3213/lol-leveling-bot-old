@@ -17,7 +17,6 @@ from tkinter import simpledialog
 
 import globals
 import listener
-import gui
 
 import cv2
 import PIL.ImageGrab
@@ -590,7 +589,7 @@ def Listener():
     while(numberOfGamesToPlay == -1):
         time.sleep(0.1)
     if(numberOfGamesToPlay is None):
-            return
+        return
     # create a hook manager
     hm = pyHook.HookManager()
     # watch for all mouse events
@@ -658,5 +657,3 @@ def GetColor(coords, isGame=False, isRiotClient=False):
     img = PIL.ImageGrab.grab(bbox=rect)
     pix = img.getpixel(coords)
     print(pix)
-
-BuildGUI()

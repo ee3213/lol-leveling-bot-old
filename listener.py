@@ -2,18 +2,31 @@ import threading
 
 import pyHook
 import pythoncom
+import win32api
+import win32con
+import time
 
 import globals
 
+listenerThreadID = None
+
 def OnKeyboardEvent(event):
+    print("here")
     if event.Key == 'F6':
-        print("clicked!")
+        if(globals.goFlag == 0):
+            globals.statusLabel.config(text=globals.lastStatus)
+            globals.goFlag = 1
+        else:
+            globals.lastStatus = globals.statusLabel.cget("text")
+            globals.statusLabel.config(text="Bot paused!")
+            globals.goFlag = 0
+    if event.Key == 'F9':
+        print("Hello")
     # return True to pass the event to other handlers
     return True
 
 def hookKeyboard():
-    # save the id of the thread
-    globals.listenerThreadID = threading.get_ident()
+    global listenerThreadID
 
     # wait until the gui thread gets an input
     while(globals.numberOfGamesToPlay == -1):
@@ -22,6 +35,9 @@ def hookKeyboard():
     if(globals.numberOfGamesToPlay is None):
         return
     
+    # save the id of the thread
+    listenerThreadID = threading.get_ident()
+
     # create a hook manager
     hm = pyHook.HookManager()
     # watch for all mouse events
@@ -34,3 +50,7 @@ def hookKeyboard():
 def createThread():
     globals.listenerThread = threading.Thread(target=hookKeyboard)
     globals.listenerThread.start()
+
+def stop():
+    if(listenerThreadID is not None):
+        win32api.PostThreadMessage(listenerThreadID, win32con.WM_QUIT, 0, 0)
