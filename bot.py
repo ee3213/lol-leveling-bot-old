@@ -15,7 +15,9 @@ import tkinter as tk
 from timeit import default_timer as timer
 from tkinter import simpledialog
 
-#test
+import globals
+import listener
+import gui
 
 import cv2
 import PIL.ImageGrab
@@ -87,7 +89,6 @@ daily_play_thresh_color = (34,115,92)
 daily_play_middle_select_color = (29,32,36)
 daily_play_ok_color = (194,181,134)
 riot_client_play_color = (11,196,226)
-
 
 # To be removed after daily play is updated to pixel
 UPPER_HALF_RECT = [0,0,1280,360]
@@ -210,6 +211,8 @@ def Run():
     global goFlag, stopFlag, lbl1, numberOfGamesToPlay, timeSinceLastClick
     while(numberOfGamesToPlay == -1):
         time.sleep(0.1)
+    if(numberOfGamesToPlay is None):
+        return
     SetStatus('Current status: Starting bot...')
     SaveUserFiles()
     SetBotFiles()
@@ -300,7 +303,7 @@ def ScanForChamp(champColor):
                     time.sleep(0.5)
                     return True
     except Exception:
-        return
+        return False
 
 def IsLeagueInGame():
     try:
@@ -586,6 +589,8 @@ def Listener():
     th2_id = threading.get_ident()
     while(numberOfGamesToPlay == -1):
         time.sleep(0.1)
+    if(numberOfGamesToPlay is None):
+            return
     # create a hook manager
     hm = pyHook.HookManager()
     # watch for all mouse events
@@ -596,16 +601,21 @@ def Listener():
     pythoncom.PumpMessages()
 
 def BuildGUI():
-    global window, lbl1, lbl2, lbl3, quitbutton, numberOfGamesToPlay
+    global window, lbl1, lbl2, lbl3, quitbutton, numberOfGamesToPlay, stopFlag
+    
     window = tk.Tk()
     window.geometry('300x105+5+180')
     window.title('League Bot')
     window.focus_set()
     window.protocol("WM_DELETE_WINDOW", QuitBot)
+
     numberOfGamesToPlay = simpledialog.askinteger(title="League Bot", prompt="How many games do you want to play?", 
                                                     minvalue=1, maxvalue=100, parent=window)
-    if(not numberOfGamesToPlay):
-        numberOfGamesToPlay = 100
+    if(numberOfGamesToPlay is None):
+        stopFlag = 1
+        window.destroy()
+        sys.exit()
+
     lbl1 = tk.Label(window, width=300,text="Current status: Starting bot...")
     lbl1.pack()
     lbl2 = tk.Label(window, width=300, text="Number of games played so far: %d" % numberOfGamesFinished)
@@ -649,4 +659,4 @@ def GetColor(coords, isGame=False, isRiotClient=False):
     pix = img.getpixel(coords)
     print(pix)
 
-Launch()
+BuildGUI()

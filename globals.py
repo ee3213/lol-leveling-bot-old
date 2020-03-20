@@ -1,0 +1,1 @@
+# File used for storing shared global variables
