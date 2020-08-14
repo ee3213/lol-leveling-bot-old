@@ -7,7 +7,7 @@ numberOfGamesFinished = 0
 goFlag = 1
 stopFlag = 0
 timeSinceLastClick = 0
-gameFlag = 0 # used in bot.clickMid() to test if game is finished
+gameFlag = 0 # used in lbot.clickMid() to test if game is finished
 
 # Thread variables
 listenerThreadID = None # used for terminating the thread properly

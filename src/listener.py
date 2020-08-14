@@ -11,7 +11,6 @@ import globals
 listenerThreadID = None
 
 def OnKeyboardEvent(event):
-    print("here")
     if event.Key == 'F6':
         if(globals.goFlag == 0):
             globals.statusLabel.config(text=globals.lastStatus)
@@ -20,8 +19,6 @@ def OnKeyboardEvent(event):
             globals.lastStatus = globals.statusLabel.cget("text")
             globals.statusLabel.config(text="Bot paused!")
             globals.goFlag = 0
-    if event.Key == 'F9':
-        print("Hello")
     # return True to pass the event to other handlers
     return True
 
@@ -35,6 +32,8 @@ def hookKeyboard():
     if(globals.numberOfGamesToPlay is None):
         return
     
+    print(globals.listenerThread)
+
     # save the id of the thread
     listenerThreadID = threading.get_ident()
 
